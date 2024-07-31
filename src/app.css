@@ -1,7 +1,6 @@
 .app {
   max-width: 100%;
-  overflow-x: clip;
-  overflow-y: scroll;
+  overflow: clip;
   margin: 0 auto;
   padding: 0;
   text-align: center;
