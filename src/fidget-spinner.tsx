@@ -46,7 +46,7 @@ const FidgetSpinner: React.FC = () => {
       }
     };
 
-    const angVelText = document.querySelector("#angular-velocity");
+    
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -61,9 +61,6 @@ const FidgetSpinner: React.FC = () => {
         spinnerBody.angularVelocity + torque
       );
       
-      if (angVelText) {
-        angVelText.innerHTML = Body.getAngularVelocity(spinnerBody).toString().slice(0,4);
-      }
       lastScrollY = currentScrollY;
       spinFidgetSpinner();
       removeFakeElements();
@@ -83,11 +80,16 @@ const FidgetSpinner: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const angVelText = document.querySelector("#angular-velocity");
     const updateRotation = () => {
       if (engineRef.current && spinnerBodyRef.current && spinnerRef.current) {
         Engine.update(engineRef.current, 1000 / 60);
         const angle = spinnerBodyRef.current.angle * (180 / Math.PI); // Convert radians to degrees
         spinnerRef.current.style.transform = `rotate(${angle}deg)`;
+      }
+
+      if (angVelText && spinnerBodyRef.current) {
+        angVelText.innerHTML = Body.getAngularVelocity(spinnerBodyRef.current).toString().slice(0,4);
       }
       requestAnimationFrame(updateRotation);
     };
