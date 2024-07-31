@@ -31,16 +31,3 @@
 .read-the-docs {
   color: #888;
 }
-
-.spinnerWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.spinnerImg {
-  width: 40vw;
-  display: block;
-  transition: transform 0.1s linear;
-}

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Spinner from "./assets/fidget.png";
 import { Engine, World, Bodies, Body } from "matter-js";
+import "./fidget-spinner.css";
 
 const FidgetSpinner: React.FC = () => {
   const spinnerRef = useRef<HTMLImageElement>(null);
@@ -44,16 +45,31 @@ const FidgetSpinner: React.FC = () => {
       }
     };
 
+    const angVelText = document.querySelector("#angular-velocity");
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      const deltaY = currentScrollY - lastScrollY;
+      let deltaY = currentScrollY - lastScrollY;
+      // this is probably not the best, as you can only scroll in one direction.
+      // It should also keep track of lastDeltaY so that we continue at same velocity?
+      deltaY = Math.max(deltaY, 1);
+
       const torque = deltaY * 0.0001; // Adjust the multiplier for desired sensitivity
-      Body.setAngularVelocity(spinnerBody, spinnerBody.angularVelocity + torque);
+      Body.setAngularVelocity(
+        spinnerBody,
+        spinnerBody.angularVelocity + torque
+      );
+      
+      if (angVelText) {
+        angVelText.innerHTML = Body.getAngularVelocity(spinnerBody).toString().slice(0,4);
+      }
       lastScrollY = currentScrollY;
       spinFidgetSpinner();
       removeFakeElements();
       addFakeElement();
     };
+
+    addFakeElement();
 
     // Attach scroll event listener
     window.addEventListener("scroll", handleScroll);
@@ -80,6 +96,11 @@ const FidgetSpinner: React.FC = () => {
 
   return (
     <div className="spinnerWrapper">
+      <div>
+        <p>
+          Angular Velocity: <span id="angular-velocity">0</span>
+        </p>
+      </div>
       <img
         ref={spinnerRef}
         className="spinnerImg"
