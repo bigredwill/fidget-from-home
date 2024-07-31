@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import Spinner from "./assets/fidget.png";
-import { Engine, Render, World, Bodies, Body, Events } from "matter-js";
+import { Engine, World, Bodies, Body } from "matter-js";
 
 const FidgetSpinner: React.FC = () => {
   const spinnerRef = useRef<HTMLImageElement>(null);
