@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "box2dweb": "^2.1.0-b",
+    "matter-js": "^0.20.0",
     "preact": "^10.22.1"
   },
   "devDependencies": {

@@ -1,13 +1,30 @@
-import React, { useEffect } from "react";
-import Spinner from "./assets/fidget.svg";
+import React, { useEffect, useRef } from "react";
+import Spinner from "./assets/fidget.png";
+import { Engine, Render, World, Bodies, Body, Events } from "matter-js";
 
 const FidgetSpinner: React.FC = () => {
+  const spinnerRef = useRef<HTMLImageElement>(null);
+  const engineRef = useRef<Engine | null>(null);
+  const spinnerBodyRef = useRef<Body | null>(null);
+
   useEffect(() => {
+    // Initialize Matter.js engine and world
+    const engine = Engine.create();
+    engineRef.current = engine;
+
+    // Create spinner body
+    const spinnerBody = Bodies.rectangle(200, 200, 100, 100, {
+      density: 1.0,
+      friction: 0.3,
+    });
+    spinnerBodyRef.current = spinnerBody;
+
+    World.add(engine.world, [spinnerBody]);
+
     const socket = new WebSocket("ws://your-server-address");
 
     const spinFidgetSpinner = () => {
       console.log("spin");
-      // Send message when the user scrolls
       socket.send(JSON.stringify({ action: "spin", speed: 10 })); // Example message
     };
 
@@ -28,6 +45,11 @@ const FidgetSpinner: React.FC = () => {
     };
 
     const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const deltaY = currentScrollY - lastScrollY;
+      const torque = deltaY * 0.0001; // Adjust the multiplier for desired sensitivity
+      Body.setAngularVelocity(spinnerBody, spinnerBody.angularVelocity + torque);
+      lastScrollY = currentScrollY;
       spinFidgetSpinner();
       removeFakeElements();
       addFakeElement();
@@ -36,22 +58,42 @@ const FidgetSpinner: React.FC = () => {
     // Attach scroll event listener
     window.addEventListener("scroll", handleScroll);
 
-    // Initial fake element to start the infinite scroll
-    addFakeElement();
-
-    // Cleanup event listener and remove fake elements on component unmount
+    // Cleanup event listener and close socket on component unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
       socket.close();
-      removeFakeElements();
     };
   }, []);
 
+  useEffect(() => {
+    const updateRotation = () => {
+      if (engineRef.current && spinnerBodyRef.current && spinnerRef.current) {
+        Engine.update(engineRef.current, 1000 / 60);
+        const angle = spinnerBodyRef.current.angle * (180 / Math.PI); // Convert radians to degrees
+        spinnerRef.current.style.transform = `rotate(${angle}deg)`;
+      }
+      requestAnimationFrame(updateRotation);
+    };
+
+    updateRotation();
+  }, []);
+
   return (
-    <div id="spinner">
-      <Spinner />
+    <div className="spinnerWrapper">
+      <img
+        ref={spinnerRef}
+        className="spinnerImg"
+        width="40vw"
+        style={{
+          display: "block",
+        }}
+        src={Spinner}
+      />
     </div>
   );
 };
 
 export default FidgetSpinner;
+
+// Outside of React for better performance
+let lastScrollY = window.scrollY;
