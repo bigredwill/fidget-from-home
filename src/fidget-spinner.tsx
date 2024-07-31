@@ -27,7 +27,7 @@ const FidgetSpinner: React.FC = () => {
 
     const spinFidgetSpinner = () => {
       console.log("spin");
-    //   socket.send(JSON.stringify({ action: "spin", speed: 10 })); // Example message
+      //   socket.send(JSON.stringify({ action: "spin", speed: 10 })); // Example message
     };
 
     const addFakeElement = () => {
@@ -46,8 +46,6 @@ const FidgetSpinner: React.FC = () => {
       }
     };
 
-    
-
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       let deltaY = currentScrollY - lastScrollY;
@@ -60,7 +58,7 @@ const FidgetSpinner: React.FC = () => {
         spinnerBody,
         spinnerBody.angularVelocity + torque
       );
-      
+
       lastScrollY = currentScrollY;
       spinFidgetSpinner();
       removeFakeElements();
@@ -75,7 +73,7 @@ const FidgetSpinner: React.FC = () => {
     // Cleanup event listener and close socket on component unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
-    //   socket.close();
+      //   socket.close();
     };
   }, []);
 
@@ -89,7 +87,9 @@ const FidgetSpinner: React.FC = () => {
       }
 
       if (angVelText && spinnerBodyRef.current) {
-        angVelText.innerHTML = Body.getAngularVelocity(spinnerBodyRef.current).toString().slice(0,4);
+        angVelText.innerHTML = Body.getAngularVelocity(spinnerBodyRef.current)
+          .toString()
+          .slice(0, 4);
       }
       requestAnimationFrame(updateRotation);
     };
