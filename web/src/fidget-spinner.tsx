@@ -23,11 +23,11 @@ const FidgetSpinner: React.FC = () => {
     World.add(engine.world, [spinnerBody]);
 
     // todo - websockets
-    // const socket = new WebSocket("ws://your-server-address");
+    const socket = new WebSocket("wss://sockets.cranked.lol/ws/");
 
     const spinFidgetSpinner = () => {
       console.log("spin");
-      //   socket.send(JSON.stringify({ action: "spin", speed: 10 })); // Example message
+        socket.send(JSON.stringify({ action: "spin", speed: 10 })); // Example message
     };
 
     const addFakeElement = () => {
@@ -73,7 +73,7 @@ const FidgetSpinner: React.FC = () => {
     // Cleanup event listener and close socket on component unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      //   socket.close();
+        socket.close();
     };
   }, []);
 
