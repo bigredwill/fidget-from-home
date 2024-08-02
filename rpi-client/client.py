@@ -28,7 +28,7 @@ async def connect_to_server(websocket_url):
 
 if __name__ == "__main__":
     # Default WebSocket URL
-    default_url = "ws://localhost:8080"
+    default_url = "ws://localhost:6001"
     
     # Get WebSocket URL from command line arguments or use default
     websocket_url = sys.argv[1] if len(sys.argv) > 1 else default_url

@@ -21,7 +21,8 @@ export class WebSocketManager {
   private client: WebSocket;
 
   constructor() {
-      this.client = new WebSocket('ws://localhost:8080');
+      const wsUrl = import.meta.env.DEV ? 'ws://localhost:6001' : `ws://${import.meta.env.VITE_SOCKET_URL}`;
+      this.client = new WebSocket(wsUrl);
 
       this.client.onopen = () => {
           console.log('WebSocket connection established');
