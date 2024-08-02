@@ -21,7 +21,7 @@ export class WebSocketManager {
   private client: WebSocket;
 
   constructor() {
-      const wsUrl = import.meta.env.DEV ? 'ws://localhost:6001' : `ws://${import.meta.env.VITE_SOCKET_URL}`;
+      const wsUrl = import.meta.env.DEV ? 'ws://localhost:6001' : `${import.meta.env.VITE_SOCKET_URL}`;
       this.client = new WebSocket(wsUrl);
 
       this.client.onopen = () => {
