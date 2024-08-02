@@ -4,19 +4,21 @@ function throttle<T extends (...args: any[]) => any>(
 ): T {
   let lastFunc: number;
   let lastRan: number;
-  return ((...args: any[]) => {
+  return ((...args: Parameters<T>): ReturnType<T> => {
     if (!lastRan) {
-      func(...args);
       lastRan = Date.now();
+      return func(...args);
     } else {
       clearTimeout(lastFunc);
       lastFunc = window.setTimeout(() => {
         if (Date.now() - lastRan >= limit) {
-          func(...args);
           lastRan = Date.now();
+          return func(...args);
         }
+        return undefined as unknown as ReturnType<T>; // Ensure a return value
       }, limit - (Date.now() - lastRan));
     }
+    return undefined as unknown as ReturnType<T>; // Ensure a return value
   }) as T;
 }
 
@@ -49,12 +51,6 @@ export class WebSocketManager {
     this.sendMessage = throttle(this.sendMessage.bind(this), 1000);
   }
 
-  /**
-   *
-   * @param sender
-   * @param content
-   * @returns
-   */
   sendMessage(sender: string, content: string): boolean {
     const message = JSON.stringify({ sender, content });
     if (this.client.readyState === this.client.OPEN) {

@@ -103,9 +103,7 @@ const FidgetSpinner: React.FC = () => {
             "fidget-spinner-web",
             `${currentAngularSpeed.toFixed(2)}`
           );
-          if (!success) {
-            setSocketConnected(false);
-          }
+          setSocketConnected(success ?? false);
           lastAngularSpeedRef.current = currentAngularSpeed;
         }
       }
