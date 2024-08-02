@@ -99,11 +99,11 @@ const FidgetSpinner: React.FC = () => {
 
         // Send message if angular speed changes
         if (currentAngularSpeed !== lastAngularSpeedRef.current) {
-          const success = socketManagerRef.current?.sendMessage(
+          socketManagerRef.current?.sendMessage(
             "fidget-spinner-web",
             `${currentAngularSpeed.toFixed(2)}`
           );
-          setSocketConnected(success ?? false);
+          setSocketConnected(socketManagerRef.current?.isOpen() ?? false);
           lastAngularSpeedRef.current = currentAngularSpeed;
         }
       }

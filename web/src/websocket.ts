@@ -51,6 +51,10 @@ export class WebSocketManager {
     this.sendMessage = throttle(this.sendMessage.bind(this), 1000);
   }
 
+  isOpen(): boolean {
+    return this.client.readyState === this.client.OPEN;
+  }
+
   sendMessage(sender: string, content: string): boolean {
     const message = JSON.stringify({ sender, content });
     if (this.client.readyState === this.client.OPEN) {
