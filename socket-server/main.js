@@ -65,8 +65,9 @@ wss.on('connection', function (ws, request) {
 //
 setInterval(() => {
   if (messages.length > 0) {
-    const sum = messages.reduce((acc, val) => acc + val, 0);
-    const avg = sum / messages.length;
+    const validMessages = messages.filter(val => !isNaN(parseFloat(val)));
+    const sum = validMessages.reduce((acc, val) => acc + val, 0);
+    const avg = validMessages.length > 0 ? sum / validMessages.length : 0;
     const averagedMessage = JSON.stringify({
       sender: 'fidget-spinner-web',
       content: avg.toString()
@@ -86,6 +87,6 @@ setInterval(() => {
 //
 // Start the server.
 //
-server.listen(8080, function () {
-  console.log('Listening on http://localhost:8080');
+server.listen(6001, function () {
+  console.log('Listening on http://localhost:6001');
 });
