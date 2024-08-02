@@ -32,14 +32,6 @@ const FidgetSpinner: React.FC = () => {
 
     World.add(engine.world, [spinnerBody]);
 
-    const spinFidgetSpinner = () => {
-      console.log("spin");
-      socketManagerRef.current?.sendMessage(
-        "fidget-spinner-web",
-        `${spinnerBodyRef.current?.angularSpeed}`
-      );
-    };
-
     const addFakeElement = () => {
       const fakeElement = document.createElement("div");
       fakeElement.style.height = "2000px";
