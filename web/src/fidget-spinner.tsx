@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Spinner from "./assets/fidget.png";
 import { Engine, World, Bodies, Body } from "matter-js";
 import "./fidget-spinner.css";
@@ -10,6 +10,7 @@ const FidgetSpinner: React.FC = () => {
   const spinnerBodyRef = useRef<Body | null>(null);
   const socketManagerRef = useRef<WebSocketManager | null>(null);
   const lastAngularSpeedRef = useRef<number>(0);
+  const [socketConnected, setSocketConnected] = useState(true);
 
   useEffect(() => {
     // Initialize WebSocketManager
@@ -48,6 +49,8 @@ const FidgetSpinner: React.FC = () => {
       }
     };
 
+    // scroll controls the spin of the fidget spinner.
+    // to do achieve endless scroll, we add fake elements to the window.
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       let deltaY = currentScrollY - lastScrollY;
@@ -68,7 +71,6 @@ const FidgetSpinner: React.FC = () => {
 
     addFakeElement();
 
-    // Attach scroll event listener
     window.addEventListener("scroll", handleScroll);
 
     // Cleanup event listener and close socket on component unmount
@@ -90,15 +92,20 @@ const FidgetSpinner: React.FC = () => {
       }
 
       if (angVelText && spinnerBodyRef.current) {
-        const currentAngularSpeed = parseFloat(Body.getAngularVelocity(spinnerBodyRef.current).toFixed(2));
+        const currentAngularSpeed = parseFloat(
+          Body.getAngularVelocity(spinnerBodyRef.current).toFixed(2)
+        );
         angVelText.innerHTML = currentAngularSpeed.toFixed(2);
 
         // Send message if angular speed changes
         if (currentAngularSpeed !== lastAngularSpeedRef.current) {
-          socketManagerRef.current?.sendMessage(
+          const success = socketManagerRef.current?.sendMessage(
             "fidget-spinner-web",
             `${currentAngularSpeed.toFixed(2)}`
           );
+          if (!success) {
+            setSocketConnected(false);
+          }
           lastAngularSpeedRef.current = currentAngularSpeed;
         }
       }
@@ -111,6 +118,28 @@ const FidgetSpinner: React.FC = () => {
   return (
     <div className="spinnerWrapper">
       <div>
+        {!socketConnected && (
+          <div className="callout" style={{
+            position: 'fixed',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            top: '0',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1,
+          }}>
+            <div className="callout-content" style={{
+              padding: '4vw',
+              background: 'rgba(0,0,0,0.8)',
+            }}>
+            You have been disconnected from the Fidget Spinner.
+            <br/>
+            Please refresh the page to continue spinning.
+            </div>
+          </div>
+        )}
         <p>
           Angular Velocity: <span id="angular-velocity">0</span>
         </p>
