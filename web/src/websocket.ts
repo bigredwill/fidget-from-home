@@ -21,7 +21,9 @@ export class WebSocketManager {
   private client: WebSocket;
 
   constructor() {
-      const wsUrl = import.meta.env.DEV ? 'ws://localhost:6001' : `${import.meta.env.VITE_SOCKET_URL}`;
+      const wsUrl = import.meta.env.DEV ? 
+      'ws://localhost:6001'
+      : `${import.meta.env.VITE_SOCKET_URL}`;
       this.client = new WebSocket(wsUrl);
 
       this.client.onopen = () => {
@@ -46,7 +48,11 @@ export class WebSocketManager {
 
   sendMessage(sender: string, content: string) {
       const message = JSON.stringify({ sender, content });
-      this.client.send(message);
+      if (this.client.readyState === this.client.OPEN) {
+        this.client.send(message);
+      } else {
+        console.log('Not sending message. Client State: ', this.client.readyState);
+      }
   }
 
   close() {
