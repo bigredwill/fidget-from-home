@@ -1,0 +1,22 @@
+{
+  "name": "socket-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@soketi/soketi": "^1.6.1",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "pusher-js": "^8.4.0-rc2",
+    "ws": "^8.18.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.8"
+  }
+}
