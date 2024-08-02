@@ -2,11 +2,21 @@ import React, { useEffect, useRef } from "react";
 import Spinner from "./assets/fidget.png";
 import { Engine, World, Bodies, Body } from "matter-js";
 import "./fidget-spinner.css";
+import { WebSocketManager } from "./websocket";
 
 const FidgetSpinner: React.FC = () => {
   const spinnerRef = useRef<HTMLImageElement>(null);
   const engineRef = useRef<Engine | null>(null);
   const spinnerBodyRef = useRef<Body | null>(null);
+  const socketManagerRef = useRef<WebSocketManager | null>(null);
+  const lastAngularSpeedRef = useRef<number>(0);
+
+  useEffect(() => {
+    // Initialize WebSocketManager
+    const socketManager = new WebSocketManager();
+    socketManagerRef.current = socketManager;
+    console.log(socketManager);
+  }, []);
 
   useEffect(() => {
     // Initialize Matter.js engine and world
@@ -22,12 +32,12 @@ const FidgetSpinner: React.FC = () => {
 
     World.add(engine.world, [spinnerBody]);
 
-    // todo - websockets
-    const socket = new WebSocket("wss://sockets.cranked.lol/ws/");
-
     const spinFidgetSpinner = () => {
       console.log("spin");
-        socket.send(JSON.stringify({ action: "spin", speed: 10 })); // Example message
+      socketManagerRef.current?.sendMessage(
+        "fidget-spinner-web",
+        `${spinnerBodyRef.current?.angularSpeed}`
+      );
     };
 
     const addFakeElement = () => {
@@ -60,7 +70,6 @@ const FidgetSpinner: React.FC = () => {
       );
 
       lastScrollY = currentScrollY;
-      spinFidgetSpinner();
       removeFakeElements();
       addFakeElement();
     };
@@ -73,7 +82,9 @@ const FidgetSpinner: React.FC = () => {
     // Cleanup event listener and close socket on component unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
-        socket.close();
+      if (socketManagerRef.current) {
+        socketManagerRef.current.close();
+      }
     };
   }, []);
 
@@ -87,9 +98,17 @@ const FidgetSpinner: React.FC = () => {
       }
 
       if (angVelText && spinnerBodyRef.current) {
-        angVelText.innerHTML = Body.getAngularVelocity(spinnerBodyRef.current)
-          .toString()
-          .slice(0, 4);
+        const currentAngularSpeed = parseFloat(Body.getAngularVelocity(spinnerBodyRef.current).toFixed(2));
+        angVelText.innerHTML = currentAngularSpeed.toFixed(2);
+
+        // Send message if angular speed changes
+        if (currentAngularSpeed !== lastAngularSpeedRef.current) {
+          socketManagerRef.current?.sendMessage(
+            "fidget-spinner-web",
+            `${currentAngularSpeed.toFixed(2)}`
+          );
+          lastAngularSpeedRef.current = currentAngularSpeed;
+        }
       }
       requestAnimationFrame(updateRotation);
     };
