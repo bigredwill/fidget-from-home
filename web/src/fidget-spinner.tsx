@@ -27,7 +27,7 @@ const FidgetSpinner: React.FC = () => {
     // Create spinner body
     const spinnerBody = Bodies.rectangle(200, 200, 100, 100, {
       density: 1.0,
-      friction: 1,
+      friction: .99,
     });
     spinnerBodyRef.current = spinnerBody;
 
@@ -38,6 +38,11 @@ const FidgetSpinner: React.FC = () => {
       let deltaY = currentScrollY - lastScrollY;
       const torque = deltaY * 0.1;
       let newAngularVelocity = spinnerBody.angularVelocity + torque;
+
+      // If the angular velocity is less than 0.8, quickly set it to 0
+      if (Math.abs(newAngularVelocity) < 0.8) {
+        newAngularVelocity = 0;
+      }
 
       newAngularVelocity = Math.max(-5, Math.min(newAngularVelocity, 5));
 
