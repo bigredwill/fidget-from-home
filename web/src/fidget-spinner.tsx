@@ -100,7 +100,7 @@ const FidgetSpinner: React.FC = () => {
         );
 
         // Clamp the angular speed between 2 and 5
-        if (currentAngularSpeed > 0) {
+        if (currentAngularSpeed > 1) {
           currentAngularSpeed = Math.max(2, Math.min(currentAngularSpeed, 5));
         }
 
@@ -158,6 +158,7 @@ const FidgetSpinner: React.FC = () => {
         <p>
           Angular Velocity: <span id="angular-velocity">0</span>
         </p>
+        <p>Scroll down the page.</p>
       </div>
       <img
         ref={spinnerRef}
