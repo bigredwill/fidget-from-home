@@ -27,7 +27,7 @@ const FidgetSpinner: React.FC = () => {
     // Create spinner body
     const spinnerBody = Bodies.rectangle(200, 200, 100, 100, {
       density: 1.0,
-      friction: .99,
+      friction: 0.99,
     });
     spinnerBodyRef.current = spinnerBody;
 
@@ -56,7 +56,10 @@ const FidgetSpinner: React.FC = () => {
       handleScroll();
 
       // Check if the user is at the top or bottom of the page
-      if (window.scrollY < 200 || (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) {
+      if (
+        window.scrollY < 200 ||
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 200
+      ) {
         // Reset scroll position to the middle
         window.scrollTo(0, document.body.scrollHeight / 2);
         lastScrollY = window.scrollY;
@@ -94,7 +97,7 @@ const FidgetSpinner: React.FC = () => {
         }
 
         // Display the angular speed as 0 to 5 in the UI
-        angVelText.innerHTML = (currentAngularSpeed).toFixed(2);
+        angVelText.innerHTML = currentAngularSpeed.toFixed(2);
 
         // Send message if angular speed changes
         if (currentAngularSpeed !== lastAngularSpeedRef.current) {
@@ -147,7 +150,7 @@ const FidgetSpinner: React.FC = () => {
         <p>
           Angular Velocity: <span id="angular-velocity">0</span>
         </p>
-        <p>Scroll down the page.</p>
+        <p>Scroll up or down to fidget.</p>
       </div>
       <img
         ref={spinnerRef}
@@ -158,6 +161,12 @@ const FidgetSpinner: React.FC = () => {
         }}
         src={Spinner}
       />
+      <a
+        href="https://simons.dev"
+        style={{ color: "white", position: "fixed", zIndex: 20, left: 4, bottom: 4 }}
+      >
+        <small>https://simons.dev</small>
+      </a>
     </div>
   );
 };
