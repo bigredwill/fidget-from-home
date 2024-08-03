@@ -33,52 +33,36 @@ const FidgetSpinner: React.FC = () => {
 
     World.add(engine.world, [spinnerBody]);
 
-    const addFakeElement = () => {
-      const fakeElement = document.createElement("div");
-      fakeElement.style.height = "2000px";
-      fakeElement.style.width = "100vw";
-      fakeElement.style.display = "block";
-      fakeElement.className = "fake-element";
-      document.body.appendChild(fakeElement);
-    };
-
-    const removeFakeElements = () => {
-      const fakeElements = document.querySelectorAll(".fake-element");
-      if (fakeElements.length > 200) {
-        fakeElements.forEach((element) => element.remove());
-      }
-    };
-
-    // scroll controls the spin of the fidget spinner.
-    // to do achieve endless scroll, we add fake elements to the window.
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       let deltaY = currentScrollY - lastScrollY;
-      deltaY = Math.max(deltaY, 1);
-
-      // Adjust the torque to favor a value around 3.5
-      const torque = deltaY * 0.001; // Adjust the multiplier for desired sensitivity
+      const torque = deltaY * 0.001;
       let newAngularVelocity = spinnerBody.angularVelocity + torque;
 
-      // Clamp the angular velocity between 2 and 5
-      if (newAngularVelocity > 0) {
-        newAngularVelocity = Math.max(2, Math.min(newAngularVelocity, 5));
-      }
+      newAngularVelocity = Math.max(-5, Math.min(newAngularVelocity, 5));
 
+      // Remove clamping logic to allow full range of angular velocity
       Body.setAngularVelocity(spinnerBody, newAngularVelocity);
 
       lastScrollY = currentScrollY;
-      removeFakeElements();
-      addFakeElement();
     };
 
-    addFakeElement();
+    const scrollLoop = () => {
+      handleScroll();
 
-    window.addEventListener("scroll", handleScroll);
+      // Check if the user is at the top or bottom of the page
+      if (window.scrollY < 200 || (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) {
+        // Reset scroll position to the middle
+        window.scrollTo(0, document.body.scrollHeight / 2);
+        lastScrollY = window.scrollY;
+      }
 
-    // Cleanup event listener and close socket on component unmount
+      requestAnimationFrame(scrollLoop);
+    };
+
+    scrollLoop();
+
     return () => {
-      window.removeEventListener("scroll", handleScroll);
       if (socketManagerRef.current) {
         socketManagerRef.current.close();
       }
