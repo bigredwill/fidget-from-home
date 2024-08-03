@@ -105,7 +105,7 @@ const FidgetSpinner: React.FC = () => {
         }
 
         // Display the angular speed as 0 to 5 in the UI
-        angVelText.innerHTML = (currentAngularSpeed - 2).toFixed(2);
+        angVelText.innerHTML = (currentAngularSpeed).toFixed(2);
 
         // Send message if angular speed changes
         if (currentAngularSpeed !== lastAngularSpeedRef.current) {
