@@ -54,15 +54,18 @@ const FidgetSpinner: React.FC = () => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       let deltaY = currentScrollY - lastScrollY;
-      // this is probably not the best, as you can only scroll in one direction.
-      // It should also keep track of lastDeltaY so that we continue at same velocity?
       deltaY = Math.max(deltaY, 1);
 
+      // Adjust the torque to favor a value around 6
       const torque = deltaY * 0.01; // Adjust the multiplier for desired sensitivity
-      Body.setAngularVelocity(
-        spinnerBody,
-        spinnerBody.angularVelocity + torque
-      );
+      let newAngularVelocity = spinnerBody.angularVelocity + torque;
+
+      // Clamp the angular velocity between 2 and 10
+      if (newAngularVelocity > 0) {
+        newAngularVelocity = Math.max(2, Math.min(newAngularVelocity, 10));
+      }
+
+      Body.setAngularVelocity(spinnerBody, newAngularVelocity);
 
       lastScrollY = currentScrollY;
       removeFakeElements();
@@ -92,9 +95,15 @@ const FidgetSpinner: React.FC = () => {
       }
 
       if (angVelText && spinnerBodyRef.current) {
-        const currentAngularSpeed = parseFloat(
+        let currentAngularSpeed = parseFloat(
           Body.getAngularVelocity(spinnerBodyRef.current).toFixed(2)
         );
+
+        // Clamp the angular speed between 2 and 10
+        if (currentAngularSpeed > 0) {
+          currentAngularSpeed = Math.max(2, Math.min(currentAngularSpeed, 10));
+        }
+
         angVelText.innerHTML = currentAngularSpeed.toFixed(2);
 
         // Send message if angular speed changes
