@@ -56,13 +56,13 @@ const FidgetSpinner: React.FC = () => {
       let deltaY = currentScrollY - lastScrollY;
       deltaY = Math.max(deltaY, 1);
 
-      // Adjust the torque to favor a value around 6
-      const torque = deltaY * 0.01; // Adjust the multiplier for desired sensitivity
+      // Adjust the torque to favor a value around 3.5
+      const torque = deltaY * 0.001; // Adjust the multiplier for desired sensitivity
       let newAngularVelocity = spinnerBody.angularVelocity + torque;
 
-      // Clamp the angular velocity between 2 and 10
+      // Clamp the angular velocity between 2 and 5
       if (newAngularVelocity > 0) {
-        newAngularVelocity = Math.max(2, Math.min(newAngularVelocity, 10));
+        newAngularVelocity = Math.max(2, Math.min(newAngularVelocity, 5));
       }
 
       Body.setAngularVelocity(spinnerBody, newAngularVelocity);
@@ -99,12 +99,13 @@ const FidgetSpinner: React.FC = () => {
           Body.getAngularVelocity(spinnerBodyRef.current).toFixed(2)
         );
 
-        // Clamp the angular speed between 2 and 10
+        // Clamp the angular speed between 2 and 5
         if (currentAngularSpeed > 0) {
-          currentAngularSpeed = Math.max(2, Math.min(currentAngularSpeed, 10));
+          currentAngularSpeed = Math.max(2, Math.min(currentAngularSpeed, 5));
         }
 
-        angVelText.innerHTML = currentAngularSpeed.toFixed(2);
+        // Display the angular speed as 0 to 5 in the UI
+        angVelText.innerHTML = (currentAngularSpeed - 2).toFixed(2);
 
         // Send message if angular speed changes
         if (currentAngularSpeed !== lastAngularSpeedRef.current) {
