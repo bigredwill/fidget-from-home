@@ -58,7 +58,7 @@ const FidgetSpinner: React.FC = () => {
       // It should also keep track of lastDeltaY so that we continue at same velocity?
       deltaY = Math.max(deltaY, 1);
 
-      const torque = deltaY * 0.0001; // Adjust the multiplier for desired sensitivity
+      const torque = deltaY * 0.01; // Adjust the multiplier for desired sensitivity
       Body.setAngularVelocity(
         spinnerBody,
         spinnerBody.angularVelocity + torque
@@ -117,24 +117,31 @@ const FidgetSpinner: React.FC = () => {
     <div className="spinnerWrapper">
       <div>
         {!socketConnected && (
-          <div className="callout" style={{
-            position: 'fixed',
-            left: '0',
-            right: '0',
-            bottom: '0',
-            top: '0',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1,
-          }}>
-            <div className="callout-content" style={{
-              padding: '4vw',
-              background: 'rgba(0,0,0,0.8)',
-            }}>
-            You have been disconnected from the Fidget Spinner.
-            <br/>
-            Please refresh the page to continue spinning.
+          <div
+            className="callout"
+            style={{
+              position: "fixed",
+              left: "0",
+              right: "0",
+              bottom: "0",
+              top: "0",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1,
+            }}
+          >
+            <div
+              className="callout-content"
+              style={{
+                padding: "4vw",
+                background: "rgba(0,0,0,0.8)",
+                color: "white",
+              }}
+            >
+              You have been disconnected from the Fidget Spinner.
+              <br />
+              Please refresh the page to continue spinning.
             </div>
           </div>
         )}
