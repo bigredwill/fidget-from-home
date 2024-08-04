@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import FidgetSpinner from "./fidget-spinner";
 import "./app.css";
 
