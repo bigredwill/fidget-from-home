@@ -41,7 +41,7 @@ const FidgetSpinner: React.FC = () => {
       let newAngularVelocity = spinnerBody.angularVelocity + torque;
 
       // If the angular velocity is less than 0.8, quickly set it to 0
-      if (Math.abs(newAngularVelocity) < 0.8) {
+      if (Math.abs(newAngularVelocity) < 1) {
         newAngularVelocity = 0;
       }
 
@@ -94,7 +94,7 @@ const FidgetSpinner: React.FC = () => {
 
         // Clamp the angular speed between 2 and 5
         if (currentAngularSpeed > 1) {
-          currentAngularSpeed = Math.max(2, Math.min(currentAngularSpeed, 5));
+          currentAngularSpeed = Math.max(1, Math.min(currentAngularSpeed, 5));
         }
 
         // Display the angular speed as 0 to 5 in the UI
