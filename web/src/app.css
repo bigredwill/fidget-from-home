@@ -12,6 +12,11 @@
   align-items: center;
 }
 
+/* While modal is open, prevent scrolling */
+.no-scroll {
+  overflow: hidden;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

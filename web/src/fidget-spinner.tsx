@@ -17,6 +17,7 @@ const FidgetSpinner: React.FC = () => {
     const socketManager = new WebSocketManager();
     socketManagerRef.current = socketManager;
     console.log(socketManager);
+    lastScrollY = window.scrollY;
   }, []);
 
   useEffect(() => {
