@@ -11,7 +11,7 @@ import time
 # Serial setup
 # Replace 'COM3' with the appropriate port for your system
 # For Linux, it might be something like '/dev/ttyUSB0'
-ser = serial.Serial('/dev/tty.usbmodem11401', 9600, timeout=1)
+ser = serial.Serial('/dev/tty.usbmodem1401', 9600, timeout=1)
 time.sleep(2)  # Wait for the connection to establish
 
 def send_speed(speed):
@@ -21,14 +21,30 @@ def send_speed(speed):
     else:
         print("Speed out of range. Must be between -10 and 10.")
 
+def slow_down_to_zero(current_speed):
+    if current_speed > 0:
+        opposite_speed = -10
+    else:
+        opposite_speed = 10
+
+    ser.write(f"{opposite_speed}\n".encode())
+    time.sleep(0.5)  # Short delay to simulate rapid slowdown
+    ser.write("0\n".encode())
+    print(f"Slowed down from {current_speed} to 0")
+
 async def on_message(websocket, path):
+    current_speed = 0  # Initialize current speed
     async for message in websocket:
         print(f"Received message: {message}")
         try:
             data = json.loads(message)  # Parse the JSON message
             speed = float(data['content'])  # Extract and convert the speed value to float
             if -5 <= speed <= 5:
-                send_speed(int(speed))
+                if speed == 0:
+                    slow_down_to_zero(current_speed)
+                else:
+                    send_speed(int(speed))
+                    current_speed = int(speed)
             else:
                 print("Speed out of range. Must be between 0 and 5.")
         except (ValueError, KeyError, json.JSONDecodeError):
